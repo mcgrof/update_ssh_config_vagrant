@@ -3,7 +3,7 @@
   delegate_to: localhost
   shell: |
     set -o pipefail
-    python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ hosts_comma }}
+    {{ role_path }}/python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ hosts_comma }}
   args:
     executable: /bin/bash
   register: remove_entry

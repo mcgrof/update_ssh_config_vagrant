@@ -4,7 +4,6 @@
   shell: |
     set -o pipefail
     python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ hosts_comma }}
-    chdir: "{{ vagrant_dir }}"
   args:
     executable: /bin/bash
   register: remove_entry

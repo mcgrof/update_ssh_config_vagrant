@@ -1,14 +1,20 @@
 ---
 - name: Remove old {{ sshconfig }} hosts entries for hosts
-  local_action:
-    module: shell
-    _raw_params: "python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ hosts_comma }}"
+  delegate_to: localhost
+  shell: |
+    set -o pipefail
+    python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ hosts_comma }}
     chdir: "{{ vagrant_dir }}"
+  register: remove_entry
+  changed_when: "remove_entry.rc == 0"
   run_once: true
 
 - name: Add new {{ sshconfig }} hosts entries for hosts
-  local_action:
-    module: shell
-    _raw_params: "vagrant ssh-config | sed '/^[[:space:]]*$/d' >>  {{ sshconfig }}"
+  delegate_to: localhost
+  shell: |
+    set -o pipefail
+    vagrant ssh-config | sed '/^[[:space:]]*$/d' >>  {{ sshconfig }}
     chdir: "{{ vagrant_dir }}"
+  register: add_entry
+  changed_when: "add_entry.rc == 0"
   run_once: true

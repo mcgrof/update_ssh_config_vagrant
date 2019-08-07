@@ -8,3 +8,4 @@
 # On your own system
 sshconfig: "~/.ssh/config"
 sshconfig_backup: "~/.ssh/config.bk"
+vagrant_dir: "../vagrant"

@@ -5,6 +5,8 @@
     set -o pipefail
     python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ hosts_comma }}
     chdir: "{{ vagrant_dir }}"
+  args:
+    executable: /bin/bash
   register: remove_entry
   changed_when: "remove_entry.rc == 0"
   run_once: true
@@ -15,6 +17,8 @@
     set -o pipefail
     vagrant ssh-config | sed '/^[[:space:]]*$/d' >>  {{ sshconfig }}
     chdir: "{{ vagrant_dir }}"
+  args:
+    executable: /bin/bash
   register: add_entry
   changed_when: "add_entry.rc == 0"
   run_once: true

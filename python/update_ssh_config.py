@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import argparse
 import sys
@@ -23,7 +23,7 @@ def main():
     args = parser.parse_args()
 
     if not args.remove:
-        print "Must specify comma separated list of hosts to remove"
+        sys.stdout.write("Must specify comma separated list of hosts to remove")
         sys.exit(0)
 
     if not os.path.isfile(args.ssh_config):

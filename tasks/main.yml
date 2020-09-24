@@ -37,11 +37,15 @@
   register: target_hosts_comma
   changed_when: "target_hosts_comma.rc == 0"
 
+- name: Set vagrant python extra args
+  set_fact:
+    update_extra_args: '--remove {{ target_hosts_comma.stdout }} --addvagranthosts {{ custom_ssh_kexalgorithms }}'
+
 - name: Update {{ sshconfig }} with hosts entries for vagrant
   delegate_to: localhost
   shell: |
     set -o pipefail
-    {{ role_path }}/python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ target_hosts_comma.stdout }} --addvagranthosts {{ custom_ssh_kexalgorithms }}
+    {{ role_path }}/python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} {{ update_extra_args }}
   args:
     executable: /bin/bash
     chdir: "{{ vagrant_dir }}"

@@ -21,6 +21,8 @@ Role Variables
   * sshconfig: your ssh configuration file
   * sshconfig_backup: where to dump the backup file
   * vagrant_dir: the location of your vagrant deployment
+  * kexalgorithms: if set, this sets a custom ssh KexAlgorithms, useful
+    on older hosts
 
 Dependencies
 ------------
@@ -37,15 +39,13 @@ would be fine if your vagrant deployment is located on ../vagrant/ directory:
 
 ```
 ---
-- hosts: all
+- hosts: localhost
   roles:
     - role: update_ssh_config_vagrant
 ```
 
 For further examples refer to one of this role's users, the
-[https://github.com/mcgrof/kdevops](kdevops) project or the
-[https://github.com/mcgrof/oscheck](oscheck) project from where
-this code originally came from.
+[https://github.com/mcgrof/kdevops](kdevops) project.
 
 License
 -------

@@ -10,27 +10,38 @@
       skip: true
   tags: vars
 
-- name: Remove old {{ sshconfig }} hosts entries for hosts
-  delegate_to: localhost
-  shell: |
-    set -o pipefail
-    {{ role_path }}/python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ hosts_comma }}
-  args:
-    executable: /bin/bash
-  register: remove_entry
-  changed_when: "remove_entry.rc == 0"
-  run_once: true
+- name: Set kexalgorithms preference
+  set_fact:
+    custom_ssh_kexalgorithms: '--kexalgorithms {{ kexalgorithms  }}'
+  when:
+    - kexalgorithms != ''
 
-- name: Add new {{ sshconfig }} hosts entries for hosts
-  delegate_to: localhost
+- name: Ignoring kexalgorithms
+  set_fact:
+    custom_ssh_kexalgorithms: ''
+  when:
+    - kexalgorithms == ''
+
+- name: Get target hosts
   shell: |
     set -o pipefail
     if [ -d .vagrant ]; then
-        vagrant ssh-config | sed '/^[[:space:]]*$/d' >>  {{ sshconfig }}
+        vagrant ssh-config | sed '/^[[:space:]]*$/d' | grep ^Host | awk '{print $2}' | sed  ':a;N;$!ba;s/\n/,/g'
     else
         echo You are not in a directory with a .vagrant directory
         exit 1
     fi
+  args:
+    executable: /bin/bash
+    chdir: "{{ vagrant_dir }}"
+  register: target_hosts_comma
+  changed_when: "target_hosts_comma.rc == 0"
+
+- name: Update {{ sshconfig }} with hosts entries for vagrant
+  delegate_to: localhost
+  shell: |
+    set -o pipefail
+    {{ role_path }}/python/update_ssh_config.py {{ sshconfig }} --backup_file {{ sshconfig_backup }} --remove {{ target_hosts_comma.stdout }} --addvagranthosts {{ custom_ssh_kexalgorithms }}
   args:
     executable: /bin/bash
     chdir: "{{ vagrant_dir }}"

@@ -14,13 +14,13 @@
   set_fact:
     custom_ssh_kexalgorithms: '--kexalgorithms {{ kexalgorithms  }}'
   when:
-    - kexalgorithms
+    - use_kexalgorithms|bool
 
 - name: Ignoring kexalgorithms
   set_fact:
     custom_ssh_kexalgorithms: ''
   when:
-    - not kexalgorithms
+    - not use_kexalgorithms|bool
 
 - name: Get target hosts
   shell: |

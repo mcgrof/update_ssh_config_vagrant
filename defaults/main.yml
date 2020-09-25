@@ -7,7 +7,7 @@
 
 # On your own system
 sshconfig: "~/.ssh/config"
-sshconfig_backup: "~/.ssh/config.bk"
+sshconfig_backup: "~/.ssh/config.backup.kdevops.vagrant"
 vagrant_dir: "../vagrant"
 use_kexalgorithms: False
 kexalgorithms: ""
